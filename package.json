@@ -5,13 +5,16 @@
   "scripts": {
     "build": "tsc",
     "dev": "nodemon src/index.ts",
-    "start": "node dist/index.js",
+    "start": "forever start dist/index.js",
+    "stop": "forever stop dist/index.js",
+    "restart": "forever restart dist/index.js",
     "slash": "ts-node tasks/slash-commands.ts"
   },
   "keywords": [],
   "dependencies": {
     "discord.js": "^14.11.0",
     "dotenv": "^16.0.3",
+    "forever": "^4.0.3",
     "unsplash-js": "^7.0.18"
   },
   "devDependencies": {
