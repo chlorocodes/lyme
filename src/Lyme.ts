@@ -25,7 +25,8 @@ export class Lyme {
       intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.DirectMessages
+        GatewayIntentBits.DirectMessages,
+        GatewayIntentBits.MessageContent
       ]
     })
     this.commands = commands as Collection<string, Command>
@@ -70,7 +71,9 @@ export class Lyme {
     }
   }
 
-  private onBotChannelMessage = (message: Message) => {}
+  private onBotChannelMessage = (message: Message) => {
+    console.log(message)
+  }
 
   private onSlashCommand = async (interaction: ChatInputCommandInteraction) => {
     const command = this.commands.get(interaction.commandName)
