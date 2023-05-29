@@ -55,14 +55,6 @@ export class Lyme {
     if (message.channel.id === this.channelId) {
       this.onBotChannelMessage(message)
     }
-
-    if (message.content.startsWith('!confidantes')) {
-      this.onConfidantes(message)
-    }
-
-    if (message.content.startsWith('!cringidantes')) {
-      this.onCringidantes(message)
-    }
   }
 
   private onInteractionCreate = (interaction: Interaction) => {
@@ -98,13 +90,5 @@ export class Lyme {
         })
       }
     }
-  }
-
-  private onConfidantes(message: Message) {
-    message.reply('Ignore Dyno bot, Cringidantes are not welcome here')
-  }
-
-  private onCringidantes(message: Message) {
-    message.reply('Cringidantes are not welcome here')
   }
 }
