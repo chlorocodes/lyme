@@ -170,13 +170,11 @@ export class Lyme {
       message.reply('thanks man :face_holding_back_tears:')
     } else if (message.content.toLowerCase().startsWith('bad bot')) {
       message.reply('sorry :cry:')
-    }
-  }
-
-  private onList(message: Message) {
-    console.log('this is running')
-    console.log(message)
-    if (message.author.id === this.admin.id && message.mentions.repliedUser) {
+    } else if (
+      message.content === '!list' &&
+      message.author.id === this.admin.id &&
+      message.mentions.repliedUser
+    ) {
       message.reply(
         `${message.mentions.repliedUser.username} has been added to Chloro's vengeance list. :salute:`
       )
