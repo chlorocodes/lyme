@@ -54,20 +54,24 @@ export class Lyme {
       return
     }
 
+    if (message.mentions.repliedUser?.id === this.id) {
+      return this.onReplyToBot(message)
+    }
+
     if (message.mentions.users.get(this.id)) {
-      this.onBotMention(message)
+      return this.onBotMention(message)
     }
 
     if (message.channel.id === this.channelId) {
-      this.onBotChannelMessage(message)
+      return this.onBotChannelMessage(message)
     }
 
     if (message.content.startsWith('!confidantes')) {
-      this.onConfidantes(message)
+      return this.onConfidantes(message)
     }
 
     if (message.content.startsWith('!cringidantes')) {
-      this.onCringidantes(message)
+      return this.onCringidantes(message)
     }
   }
 
@@ -121,5 +125,7 @@ export class Lyme {
     console.log(message)
   }
 
-  private onMessageToBot(message: Message) {}
+  private onReplyToBot(message: Message) {
+    console.log('this is a reply to bot')
+  }
 }
