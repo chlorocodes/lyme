@@ -121,7 +121,7 @@ export class Lyme {
   }
 
   private onBotMention(message: Message) {
-    let content = message.content.toLowerCase()
+    let content = message.content.toLowerCase().trim()
 
     console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@')
 
