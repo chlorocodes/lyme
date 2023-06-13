@@ -48,6 +48,9 @@ export class Lyme {
   }
 
   private onMessageCreate = (message: Message) => {
+    console.log('onMessageCreate')
+    console.log(message)
+
     if (message.author.bot) {
       return
     }
@@ -71,19 +74,30 @@ export class Lyme {
     if (message.content.trim().startsWith('!cringidantes')) {
       return this.onCringidantes(message)
     }
+
+    if (message.content.trim().startsWith('!list')) {
+      if (message.author.id === this.admin.id && message.mentions.repliedUser) {
+        message.reply(
+          `${message.mentions.repliedUser.username} has been added to Chloro's vengeance list. :salute:`
+        )
+      }
+    }
   }
 
   private onInteractionCreate = (interaction: Interaction) => {
+    console.log('onInteractionCreate')
     if (interaction.isChatInputCommand()) {
       this.onSlashCommand(interaction)
     }
   }
 
   private onBotChannelMessage = (message: Message) => {
+    console.log('onBotChannelMessage')
     console.log(message)
   }
 
   private onSlashCommand = async (interaction: ChatInputCommandInteraction) => {
+    console.log('onSlashCommand')
     const command = this.commands.get(interaction.commandName)
 
     if (!command) {
@@ -109,16 +123,19 @@ export class Lyme {
   }
 
   private onConfidantes(message: Message) {
+    console.log('onConfidantes')
     message.reply(
       'tHe coNfIdaNteS kNow wHaT’s iN yOur mOm’s pAnTs, cAUse wE wATer hEr pLanTs – 🤓'
     )
   }
 
   private onCringidantes(message: Message) {
+    console.log('onCringidantes')
     message.reply('Cringidantes are not welcome here')
   }
 
   private onBotMention(message: Message) {
+    console.log('onBotMention')
     let content = message.content.toLowerCase().trim()
 
     if (content.startsWith(`<@${this.id}>`)) {
@@ -162,6 +179,7 @@ export class Lyme {
   }
 
   private onReplyToBot(message: Message) {
+    console.log('onReplyToBot')
     if (message.content.toLowerCase().startsWith('good bot')) {
       message.reply('thanks man :face_holding_back_tears:')
     } else if (message.content.toLowerCase().startsWith('bad bot')) {
