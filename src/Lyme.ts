@@ -71,10 +71,6 @@ export class Lyme {
     if (message.content.trim().startsWith('!cringidantes')) {
       return this.onCringidantes(message)
     }
-
-    if (message.content.trim().startsWith('!list')) {
-      return this.onList(message)
-    }
   }
 
   private onInteractionCreate = (interaction: Interaction) => {
