@@ -121,7 +121,11 @@ export class Lyme {
   }
 
   private onBotMention(message: Message) {
-    const content = message.content.toLowerCase()
+    let content = message.content.toLowerCase()
+
+    if (content.startsWith(`<${this.id}>`)) {
+      content = content.slice(`<${this.id}>`.length)
+    }
 
     const fuInsults = [
       'fu',
