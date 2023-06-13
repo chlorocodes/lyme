@@ -174,6 +174,8 @@ export class Lyme {
   }
 
   private onList(message: Message) {
+    console.log('this is running')
+    console.log(message)
     if (message.author.id === this.admin.id && message.mentions.repliedUser) {
       message.reply(
         `${message.mentions.repliedUser.username} has been added to Chloro's vengeance list. :salute:`
