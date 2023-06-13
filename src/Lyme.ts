@@ -123,14 +123,9 @@ export class Lyme {
   private onBotMention(message: Message) {
     let content = message.content.toLowerCase().trim()
 
-    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@')
-
     if (content.startsWith(`<@${this.id}>`)) {
-      content = content.slice(`<@${this.id}>`.length)
+      content = content.slice(`<@${this.id}>`.length).trim()
     }
-
-    console.log(content)
-    console.log('##############################')
 
     const fuInsults = [
       'fu',
@@ -165,12 +160,6 @@ export class Lyme {
 
     if (content.trim().startsWith('hi')) {
       message.reply('hi friend :blush:')
-    } else {
-      console.log(content)
-      console.log(content)
-      console.log(content)
-      console.log(content)
-      console.log(content)
     }
   }
 
