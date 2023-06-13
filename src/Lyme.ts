@@ -163,7 +163,7 @@ export class Lyme {
       message.reply('thanks man :face_holding_back_tears:')
     }
 
-    if (content.startsWith('hi')) {
+    if (content.trim().startsWith('hi')) {
       message.reply('hi friend :blush:')
     } else {
       console.log(content)
