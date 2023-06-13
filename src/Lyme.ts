@@ -126,6 +126,10 @@ export class Lyme {
   }
 
   private onReplyToBot(message: Message) {
-    console.log('this is a reply to bot')
+    if (message.content.toLowerCase().startsWith('good bot')) {
+      message.reply('thanks man :face_holding_back_tears:')
+    } else if (message.content.toLowerCase().startsWith('bad bot')) {
+      message.reply('sorry :cry:')
+    }
   }
 }
