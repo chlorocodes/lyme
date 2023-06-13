@@ -48,8 +48,6 @@ export class Lyme {
   }
 
   private onMessageCreate = (message: Message) => {
-    console.log(message)
-
     if (message.author.bot) {
       return
     }
@@ -66,11 +64,11 @@ export class Lyme {
       return this.onBotChannelMessage(message)
     }
 
-    if (message.content.startsWith('!confidantes')) {
+    if (message.content.trim().startsWith('!confidantes')) {
       return this.onConfidantes(message)
     }
 
-    if (message.content.startsWith('!cringidantes')) {
+    if (message.content.trim().startsWith('!cringidantes')) {
       return this.onCringidantes(message)
     }
   }
@@ -158,7 +156,7 @@ export class Lyme {
       message.reply('thanks man :face_holding_back_tears:')
     }
 
-    if (content.trim().startsWith('hi')) {
+    if (content.startsWith('hi')) {
       message.reply('hi friend :blush:')
     }
   }
