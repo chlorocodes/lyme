@@ -48,8 +48,14 @@ export class Lyme {
   }
 
   private onMessageCreate = (message: Message) => {
+    console.log(message)
+
     if (message.author.bot) {
       return
+    }
+
+    if (message.mentions.users.get(this.id)) {
+      this.onBotMention(message)
     }
 
     if (message.channel.id === this.channelId) {
@@ -109,4 +115,11 @@ export class Lyme {
   private onCringidantes(message: Message) {
     message.reply('Cringidantes are not welcome here')
   }
+
+  private onBotMention(message: Message) {
+    console.log('this message mentions the bot')
+    console.log(message)
+  }
+
+  private onMessageToBot(message: Message) {}
 }
