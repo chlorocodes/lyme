@@ -121,8 +121,42 @@ export class Lyme {
   }
 
   private onBotMention(message: Message) {
-    console.log('this message mentions the bot')
-    console.log(message)
+    const content = message.content.toLowerCase()
+
+    const fuInsults = [
+      'fu',
+      'f u',
+      'fuc u',
+      'fuck u',
+      'fk u',
+      'fuck you',
+      'fuck yu',
+      'fuck yourself',
+      'go fuck yourself'
+    ]
+
+    const bitchInsults = [
+      'bitch',
+      "you're a bitch",
+      'your a bitch',
+      'u bitch',
+      'ur a bitch',
+      'youre a bitch'
+    ]
+
+    if (fuInsults.includes(content)) {
+      message.reply(':angry:')
+    } else if (bitchInsults.includes(content)) {
+      message.reply("nah you're the lil bitch")
+    }
+
+    if (content === 'good bot') {
+      message.reply('thanks man :face_holding_back_tears:')
+    }
+
+    if (content.startsWith('hi')) {
+      message.reply('hi friend :blush:')
+    }
   }
 
   private onReplyToBot(message: Message) {
