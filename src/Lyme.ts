@@ -71,6 +71,10 @@ export class Lyme {
     if (message.content.trim().startsWith('!cringidantes')) {
       return this.onCringidantes(message)
     }
+
+    if (message.content.trim().startsWith('!list')) {
+      return this.onList(message)
+    }
   }
 
   private onInteractionCreate = (interaction: Interaction) => {
@@ -119,10 +123,6 @@ export class Lyme {
   }
 
   private onBotMention(message: Message) {
-    if (message.author.id === this.admin.id) {
-      this.onMessageFromMeToBot(message)
-    }
-
     let content = message.content.toLowerCase().trim()
 
     if (content.startsWith(`<@${this.id}>`)) {
@@ -173,13 +173,11 @@ export class Lyme {
     }
   }
 
-  private onMessageFromMeToBot(message: Message) {
-    if (message.content === '!list') {
-      if (message.mentions.repliedUser) {
-        message.reply(
-          `${message.mentions.repliedUser.username} has been added to Chloro's vengeance list. :salute:`
-        )
-      }
+  private onList(message: Message) {
+    if (message.author.id === this.admin.id && message.mentions.repliedUser) {
+      message.reply(
+        `${message.mentions.repliedUser.username} has been added to Chloro's vengeance list. :salute:`
+      )
     }
   }
 }
