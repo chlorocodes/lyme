@@ -119,6 +119,10 @@ export class Lyme {
   }
 
   private onBotMention(message: Message) {
+    if (message.author.id === this.admin.id) {
+      this.onMessageFromMeToBot(message)
+    }
+
     let content = message.content.toLowerCase().trim()
 
     if (content.startsWith(`<@${this.id}>`)) {
@@ -166,6 +170,16 @@ export class Lyme {
       message.reply('thanks man :face_holding_back_tears:')
     } else if (message.content.toLowerCase().startsWith('bad bot')) {
       message.reply('sorry :cry:')
+    }
+  }
+
+  private onMessageFromMeToBot(message: Message) {
+    if (message.content === '!list') {
+      if (message.mentions.repliedUser) {
+        message.reply(
+          `${message.mentions.repliedUser.username} has been added to Chloro's vengeance list. :salute:`
+        )
+      }
     }
   }
 }
