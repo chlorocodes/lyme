@@ -7,12 +7,14 @@ const rest = new REST().setToken(process.env.DISCORD_TOKEN as string)
 
 ;(async () => {
   try {
-    const data = (await rest.put(
+    const data = await rest.put(
       Routes.applicationGuildCommands(clientId, guildId),
       { body: commands }
-    )) as any
+    )
     console.log(
-      `Successfully reloaded ${data.length} application (/) commands.`
+      `Successfully reloaded ${
+        (data as unknown as string).length
+      } application (/) commands.`
     )
   } catch (error) {
     console.error(error)
