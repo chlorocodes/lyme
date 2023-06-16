@@ -1,0 +1,13 @@
+datasource db {
+  url      = env("DATABASE_URL")
+  provider = "sqlite"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model BadUser {
+  id       String @id
+  username String
+}

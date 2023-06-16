@@ -1,16 +1,16 @@
 import { join } from 'path'
 import {
-  ChatInputCommandInteraction,
   Client,
   Collection,
   GatewayIntentBits,
   GuildMember,
-  Interaction,
-  Message
+  Message,
+  User
 } from 'discord.js'
 import { v2 } from '@google-cloud/translate'
 import { commands } from './commands'
 import type { Command } from './commands/core/Command'
+import { PrismaClient } from '@prisma/client'
 
 export class Lyme {
   private client: Client
@@ -20,6 +20,7 @@ export class Lyme {
   private commands: Collection<string, Command>
   private admin: { id: string; username: string }
   private translator: v2.Translate
+  private db: PrismaClient
 
   constructor() {
     this.token = process.env.DISCORD_TOKEN as string
@@ -42,12 +43,12 @@ export class Lyme {
       projectId: 'lyme-390002',
       keyFilename: join(__dirname, 'google-keys.json')
     })
+    this.db = new PrismaClient()
   }
 
   run() {
     this.client.once('ready', this.onReady)
     this.client.on('messageCreate', this.onMessageCreate)
-    this.client.on('interactionCreate', this.onInteractionCreate)
     this.client.login(this.token)
   }
 
@@ -55,23 +56,27 @@ export class Lyme {
     console.log(`Ready! Logged in as ${c.user.tag}`)
   }
 
-  private onMessageCreate = (message: Message) => {
-    console.log('onMessageCreate')
+  private onMessageCreate = async (message: Message) => {
+    const blackList = await this.db.badUser.findMany()
+
+    if (blackList.some((badUser) => badUser.id === message.author.id)) {
+      message.reply(
+        'LOL I do not talk with people that Chloro has blacklisted :laughing:'
+      )
+      return
+    }
 
     if (message.author.bot) {
       return
     }
 
-    if (message.mentions.repliedUser?.id === this.id) {
-      return this.onReplyToBot(message)
-    }
+    if (message)
+      if (message.mentions.repliedUser?.id === this.id) {
+        return this.onReplyToBot(message)
+      }
 
     if (message.mentions.users.get(this.id)) {
       return this.onBotMention(message)
-    }
-
-    if (message.channel.id === this.channelId) {
-      return this.onBotChannelMessage(message)
     }
 
     if (message.content.trim().startsWith('!confidantes')) {
@@ -91,49 +96,11 @@ export class Lyme {
     }
 
     if (message.content.trim().startsWith('!list')) {
-      if (message.author.id === this.admin.id && message.mentions.repliedUser) {
-        message.reply(
-          `${message.mentions.repliedUser.username} has been added to Chloro's vengeance list. :saluting_face:`
-        )
-      }
-    }
-  }
-
-  private onInteractionCreate = (interaction: Interaction) => {
-    console.log('onInteractionCreate')
-    if (interaction.isChatInputCommand()) {
-      this.onSlashCommand(interaction)
-    }
-  }
-
-  private onBotChannelMessage = (message: Message) => {
-    console.log('onBotChannelMessage')
-    console.log(message)
-  }
-
-  private onSlashCommand = async (interaction: ChatInputCommandInteraction) => {
-    console.log('onSlashCommand')
-    const command = this.commands.get(interaction.commandName)
-
-    if (!command) {
-      return
+      return this.onBlacklist(message)
     }
 
-    try {
-      await command.execute(interaction)
-    } catch (err) {
-      console.error(err)
-      if (interaction.replied || interaction.deferred) {
-        await interaction.followUp({
-          content: 'There was an error while executing this command!',
-          ephemeral: true
-        })
-      } else {
-        await interaction.reply({
-          content: 'There was an error while executing this command!',
-          ephemeral: true
-        })
-      }
+    if (message.content.trim().startsWith('!debug')) {
+      console.log(message)
     }
   }
 
@@ -178,10 +145,21 @@ export class Lyme {
       'youre a bitch'
     ]
 
+    const gayInsults = [
+      'gay',
+      'ur gay',
+      'u gay',
+      'your gay',
+      'youre gay',
+      "you're gay"
+    ]
+
     if (fuInsults.includes(content)) {
       message.reply(':angry:')
     } else if (bitchInsults.includes(content)) {
       message.reply("nah you're the lil bitch")
+    } else if (gayInsults.includes(content)) {
+      message.reply('y u projecting though')
     }
 
     if (content === 'good bot') {
@@ -189,7 +167,7 @@ export class Lyme {
     }
 
     if (content.startsWith('hi')) {
-      message.reply('hi friend :blush:')
+      message.reply('hi :blush:')
     }
   }
 
@@ -241,6 +219,38 @@ export class Lyme {
       reference.reply(`Translation: ${translation}`)
     } catch (error) {
       message.reply(`Unable to translate ${untranslated}`)
+    }
+  }
+
+  private async onBlacklist(message: Message) {
+    if (message.content.trim() === '!list') {
+      const badUsers = await this.db.badUser.findMany()
+      let reply =
+        "Here is the last of trash individuals that are on Chloro's vengeance list: "
+      badUsers.forEach((user) => {
+        reply += `\n* ${user}`
+      })
+      message.reply(reply)
+      return
+    }
+
+    try {
+      if (message.mentions.users.size > 0) {
+        if (message.author.id !== this.admin.id) {
+          message.reply('Only Chloro is allowed to put people on the list')
+          return
+        }
+
+        const { username, id } = message.mentions.users.at(0) as User
+        await this.db.badUser.create({
+          data: {
+            id,
+            username
+          }
+        })
+      }
+    } catch (err) {
+      message.reply('There was an error when putting this user on the list')
     }
   }
 }
