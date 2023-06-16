@@ -248,6 +248,9 @@ export class Lyme {
             username
           }
         })
+        message.reply(
+          `${username} has been added to the vengeance list. I will no longer provide any help or run any commands if ${username} asks me to :laughing:`
+        )
       }
     } catch (err) {
       message.reply('There was an error when putting this user on the list')
