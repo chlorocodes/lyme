@@ -234,7 +234,7 @@ export class Lyme {
       const [translation] = await this.translator.translate(untranslated, {
         to: 'en'
       })
-      message.reply(`Translation: ${translation}`)
+      reference.reply(`Translation: ${translation}`)
     } catch (error) {
       message.reply(`Unable to translate ${untranslated}`)
     }
