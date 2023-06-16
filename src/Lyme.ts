@@ -231,9 +231,8 @@ export class Lyme {
     const reference = await message.fetchReference()
     const untranslated = reference.content
     if (untranslated.length > 600) {
-      return message.reply(
-        "Sorry, I'm not going to translate a message this long"
-      )
+      message.reply("Sorry, I'm not going to translate a message this long")
+      return
     }
     try {
       const [translation] = await this.translator.translate(untranslated, {
