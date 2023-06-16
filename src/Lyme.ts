@@ -4,13 +4,11 @@ import {
   Collection,
   GatewayIntentBits,
   GuildMember,
-  Message,
-  User
+  Message
 } from 'discord.js'
 import { v2 } from '@google-cloud/translate'
 import { commands } from './commands'
 import type { Command } from './commands/core/Command'
-import { PrismaClient } from '@prisma/client'
 
 export class Lyme {
   private client: Client
@@ -20,7 +18,6 @@ export class Lyme {
   private commands: Collection<string, Command>
   private admin: { id: string; username: string }
   private translator: v2.Translate
-  private db: PrismaClient
 
   constructor() {
     this.token = process.env.DISCORD_TOKEN as string
@@ -43,7 +40,6 @@ export class Lyme {
       projectId: 'lyme-390002',
       keyFilename: join(__dirname, 'google-keys.json')
     })
-    this.db = new PrismaClient()
   }
 
   run() {
@@ -57,15 +53,6 @@ export class Lyme {
   }
 
   private onMessageCreate = async (message: Message) => {
-    const blackList = await this.db.badUser.findMany()
-
-    if (blackList.some((badUser) => badUser.id === message.author.id)) {
-      message.reply(
-        'LOL I do not talk with people that Chloro has blacklisted :laughing:'
-      )
-      return
-    }
-
     if (message.author.bot) {
       return
     }
@@ -95,9 +82,9 @@ export class Lyme {
       return this.onTranslate(message)
     }
 
-    if (message.content.trim().startsWith('!list')) {
-      return this.onBlacklist(message)
-    }
+    // if (message.content.trim().startsWith('!list')) {
+    //   return this.onBlacklist(message)
+    // }
 
     if (message.content.trim().startsWith('!debug')) {
       console.log(message)
@@ -222,38 +209,36 @@ export class Lyme {
     }
   }
 
-  private async onBlacklist(message: Message) {
-    if (message.content.trim() === '!list') {
-      const badUsers = await this.db.badUser.findMany()
-      let reply =
-        "Here is the last of trash individuals that are on Chloro's vengeance list: "
-      badUsers.forEach((user) => {
-        reply += `\n* ${user}`
-      })
-      message.reply(reply)
-      return
-    }
-
-    try {
-      if (message.mentions.users.size > 0) {
-        if (message.author.id !== this.admin.id) {
-          message.reply('Only Chloro is allowed to put people on the list')
-          return
-        }
-
-        const { username, id } = message.mentions.users.at(0) as User
-        await this.db.badUser.create({
-          data: {
-            id,
-            username
-          }
-        })
-        message.reply(
-          `${username} has been added to the vengeance list. I will no longer provide any help or run any commands if ${username} asks me to :laughing:`
-        )
-      }
-    } catch (err) {
-      message.reply('There was an error when putting this user on the list')
-    }
-  }
+  // private async onBlacklist(message: Message) {
+  //   if (message.content.trim() === '!list') {
+  //     const badUsers = await this.db.badUser.findMany()
+  //     let reply =
+  //       "Here is the last of trash individuals that are on Chloro's vengeance list: "
+  //     badUsers.forEach((user) => {
+  //       reply += `\n* ${user}`
+  //     })
+  //     message.reply(reply)
+  //     return
+  //   }
+  //   try {
+  //     if (message.mentions.users.size > 0) {
+  //       if (message.author.id !== this.admin.id) {
+  //         message.reply('Only Chloro is allowed to put people on the list')
+  //         return
+  //       }
+  //       const { username, id } = message.mentions.users.at(0) as User
+  //       await this.db.badUser.create({
+  //         data: {
+  //           id,
+  //           username
+  //         }
+  //       })
+  //       message.reply(
+  //         `${username} has been added to the vengeance list. I will no longer provide any help or run any commands if ${username} asks me to :laughing:`
+  //       )
+  //     }
+  //   } catch (err) {
+  //     message.reply('There was an error when putting this user on the list')
+  //   }
+  // }
 }
