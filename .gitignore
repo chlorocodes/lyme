@@ -3,3 +3,5 @@ dist
 .env
 .npmignore
 config.json
+google-keys.json
+.DS_Store

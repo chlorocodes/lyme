@@ -1,11 +1,14 @@
+import { join } from 'path'
 import {
   ChatInputCommandInteraction,
   Client,
   Collection,
   GatewayIntentBits,
+  GuildMember,
   Interaction,
   Message
 } from 'discord.js'
+import { v2 } from '@google-cloud/translate'
 import { commands } from './commands'
 import type { Command } from './commands/core/Command'
 
@@ -16,6 +19,7 @@ export class Lyme {
   private channelId: string
   private commands: Collection<string, Command>
   private admin: { id: string; username: string }
+  private translator: v2.Translate
 
   constructor() {
     this.token = process.env.DISCORD_TOKEN as string
@@ -34,6 +38,10 @@ export class Lyme {
       id: '320054778371637250',
       username: 'chloro 𝕀𝕍'
     }
+    this.translator = new v2.Translate({
+      projectId: 'lyme-390002',
+      keyFilename: join(__dirname, 'google-keys.json')
+    })
   }
 
   run() {
@@ -49,7 +57,6 @@ export class Lyme {
 
   private onMessageCreate = (message: Message) => {
     console.log('onMessageCreate')
-    console.log(message)
 
     if (message.author.bot) {
       return
@@ -73,6 +80,14 @@ export class Lyme {
 
     if (message.content.trim().startsWith('!cringidantes')) {
       return this.onCringidantes(message)
+    }
+
+    if (message.content.trim().startsWith('!abuse')) {
+      return this.onAbuse(message)
+    }
+
+    if (message.content.trim().startsWith('!translate')) {
+      return this.onTranslate(message)
     }
 
     if (message.content.trim().startsWith('!list')) {
@@ -192,6 +207,36 @@ export class Lyme {
       message.reply(
         `${message.mentions.repliedUser.username} has been added to Chloro's vengeance list. :saluting_face:`
       )
+    }
+  }
+
+  private async onAbuse(message: Message) {
+    if (message.author.id !== this.admin.id) {
+      message.reply('Only chloro is allowed to abuse people :laughing:')
+      return
+    }
+
+    try {
+      const victim = message.mentions.members?.at(0) as GuildMember
+      const oldNickname = victim.nickname ?? victim.user.username
+      const [, , newNickname] = message.content.split(' ')
+      await victim?.setNickname(newNickname)
+      message.reply(`I have renamed ${oldNickname} to ${newNickname}`)
+    } catch (error) {
+      message.reply("I don't have permission to rename them :(")
+    }
+  }
+
+  private async onTranslate(message: Message) {
+    const reference = await message.fetchReference()
+    const untranslated = reference.content
+    try {
+      const [translation] = await this.translator.translate(untranslated, {
+        to: 'en'
+      })
+      message.reply(translation)
+    } catch (error) {
+      message.reply(`Unable to translate ${untranslated}`)
     }
   }
 }
