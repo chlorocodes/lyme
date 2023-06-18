@@ -10,6 +10,10 @@ import { v2 } from '@google-cloud/translate'
 import { commands } from './commands'
 import type { Command } from './commands/core/Command'
 
+const assetsFolder = join(__dirname, 'assets')
+
+type ImagePath = 'man' | 'wut' | 'powerscaling'
+
 export class Lyme {
   private client: Client
   private token: string
@@ -18,6 +22,7 @@ export class Lyme {
   private commands: Collection<string, Command>
   private admin: { id: string; username: string }
   private translator: v2.Translate
+  private imagePaths: Record<ImagePath, string>
 
   constructor() {
     this.token = process.env.DISCORD_TOKEN as string
@@ -40,6 +45,11 @@ export class Lyme {
       projectId: 'lyme-390002',
       keyFilename: join(__dirname, 'google-keys.json')
     })
+    this.imagePaths = {
+      man: join(assetsFolder, 'man.png'),
+      powerscaling: join(assetsFolder, 'powerscaling.png'),
+      wut: join(assetsFolder, 'wut.png')
+    }
   }
 
   run() {
@@ -57,34 +67,39 @@ export class Lyme {
       return
     }
 
-    if (message)
-      if (message.mentions.repliedUser?.id === this.id) {
-        return this.onReplyToBot(message)
-      }
+    if (message.mentions.repliedUser?.id === this.id) {
+      return this.onReplyToBot(message)
+    }
 
     if (message.mentions.users.get(this.id)) {
       return this.onBotMention(message)
     }
 
-    if (message.content.trim().startsWith('!confidantes')) {
+    const msg = message.content.trim().toLowerCase()
+
+    if (msg.startsWith('!confidantes')) {
       return this.onConfidantes(message)
     }
 
-    if (message.content.trim().startsWith('!cringidantes')) {
+    if (msg.startsWith('!cringidantes')) {
       return this.onCringidantes(message)
     }
 
-    if (message.content.trim().startsWith('!abuse')) {
+    if (msg.startsWith('!abuse')) {
       return this.onAbuse(message)
     }
 
-    if (message.content.trim().startsWith('!translate')) {
+    if (msg.startsWith('!translate')) {
       return this.onTranslate(message)
     }
 
-    // if (message.content.trim().startsWith('!list')) {
-    //   return this.onBlacklist(message)
-    // }
+    if (msg.startsWith('!wut') || msg.startsWith('!huh')) {
+      return this.onWut(message)
+    }
+
+    if (msg.startsWith('!man')) {
+      return this.onMan(message)
+    }
 
     if (message.content.trim().startsWith('!debug')) {
       console.log(message)
@@ -209,36 +224,21 @@ export class Lyme {
     }
   }
 
-  // private async onBlacklist(message: Message) {
-  //   if (message.content.trim() === '!list') {
-  //     const badUsers = await this.db.badUser.findMany()
-  //     let reply =
-  //       "Here is the last of trash individuals that are on Chloro's vengeance list: "
-  //     badUsers.forEach((user) => {
-  //       reply += `\n* ${user}`
-  //     })
-  //     message.reply(reply)
-  //     return
-  //   }
-  //   try {
-  //     if (message.mentions.users.size > 0) {
-  //       if (message.author.id !== this.admin.id) {
-  //         message.reply('Only Chloro is allowed to put people on the list')
-  //         return
-  //       }
-  //       const { username, id } = message.mentions.users.at(0) as User
-  //       await this.db.badUser.create({
-  //         data: {
-  //           id,
-  //           username
-  //         }
-  //       })
-  //       message.reply(
-  //         `${username} has been added to the vengeance list. I will no longer provide any help or run any commands if ${username} asks me to :laughing:`
-  //       )
-  //     }
-  //   } catch (err) {
-  //     message.reply('There was an error when putting this user on the list')
-  //   }
-  // }
+  private async onMan(message: Message) {
+    console.log(message)
+  }
+
+  private async onWut(message: Message) {
+    console.log(message)
+  }
+
+  private async onPowerScaling(message: Message) {
+    message.channel.send({
+      files: [
+        {
+          attachment: this.imagePaths.man
+        }
+      ]
+    })
+  }
 }
