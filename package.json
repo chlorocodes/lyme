@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Discord bot for Lyme",
   "scripts": {
+    "clean": "rm -r dist",
     "build": "npm run compile && npm run copyFiles",
     "compile": "tsc",
     "copyFiles": "cp -r src/assets dist",
