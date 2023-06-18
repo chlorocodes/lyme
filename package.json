@@ -1,7 +1,7 @@
 {
   "name": "lyme",
   "version": "1.0.0",
-  "description": "Discord bot for WIP",
+  "description": "Discord bot for Lyme",
   "scripts": {
     "build": "tsc && cp -r src/assets dist/assets",
     "dev": "nodemon src/index.ts",
