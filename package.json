@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Discord bot for Lyme",
   "scripts": {
-    "build": "tsc && cp -r src/assets dist/assets",
+    "build": "tsc && cp -r src/assets dist",
     "dev": "nodemon src/index.ts",
     "start": "forever start dist/index.js",
     "stop": "forever stop dist/index.js",
