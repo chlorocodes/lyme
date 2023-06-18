@@ -12,7 +12,14 @@ import type { Command } from './commands/core/Command'
 
 const assetsFolder = join(__dirname, 'assets')
 
-type ImagePath = 'man' | 'wut' | 'powerscaling' | 'mirror' | 'stupid' | 'woot'
+type ImagePath =
+  | 'man'
+  | 'wut'
+  | 'powerscaling'
+  | 'mirror'
+  | 'stupid'
+  | 'woot'
+  | 'bitchPls'
 
 export class Lyme {
   private client: Client
@@ -51,7 +58,8 @@ export class Lyme {
       wut: join(assetsFolder, 'wut.png'),
       mirror: join(assetsFolder, 'mirror.png'),
       stupid: join(assetsFolder, 'stupid.jpeg'),
-      woot: join(assetsFolder, 'woot.jpeg')
+      woot: join(assetsFolder, 'woot.jpeg'),
+      bitchPls: join(assetsFolder, 'bitchPls.jpg')
     }
   }
 
@@ -118,6 +126,10 @@ export class Lyme {
 
     if (msg.startsWith('!woot')) {
       return this.onWoot(message)
+    }
+
+    if (msg.startsWith('!bitchplease') || msg.startsWith('!bitchpls')) {
+      return this.onBitchPls(message)
     }
 
     if (message.content.trim().startsWith('!debug')) {
@@ -298,6 +310,16 @@ export class Lyme {
       files: [
         {
           attachment: this.imagePaths.stupid
+        }
+      ]
+    })
+  }
+
+  private async onBitchPls(message: Message) {
+    message.channel.send({
+      files: [
+        {
+          attachment: this.imagePaths.bitchPls
         }
       ]
     })
