@@ -7,4 +7,3 @@ google-keys.json
 .DS_Store
 *.db
 *.db-journal
-db.json
