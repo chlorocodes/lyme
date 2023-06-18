@@ -12,7 +12,7 @@ import type { Command } from './commands/core/Command'
 
 const assetsFolder = join(__dirname, 'assets')
 
-type ImagePath = 'man' | 'wut' | 'powerscaling'
+type ImagePath = 'man' | 'wut' | 'powerscaling' | 'mirror' | 'stupid' | 'woot'
 
 export class Lyme {
   private client: Client
@@ -48,7 +48,10 @@ export class Lyme {
     this.imagePaths = {
       man: join(assetsFolder, 'man.png'),
       powerscaling: join(assetsFolder, 'powerscaling.png'),
-      wut: join(assetsFolder, 'wut.png')
+      wut: join(assetsFolder, 'wut.png'),
+      mirror: join(assetsFolder, 'mirror.png'),
+      stupid: join(assetsFolder, 'stupid.jpeg'),
+      woot: join(assetsFolder, 'woot.jpeg')
     }
   }
 
@@ -99,6 +102,22 @@ export class Lyme {
 
     if (msg.startsWith('!man')) {
       return this.onMan(message)
+    }
+
+    if (msg.startsWith('!powerscaling')) {
+      return this.onPowerScaling(message)
+    }
+
+    if (msg.startsWith('!stupid')) {
+      return this.onStupid(message)
+    }
+
+    if (msg.startsWith('!mirror')) {
+      return this.onMirror(message)
+    }
+
+    if (msg.startsWith('!woot')) {
+      return this.onWoot(message)
     }
 
     if (message.content.trim().startsWith('!debug')) {
@@ -225,18 +244,60 @@ export class Lyme {
   }
 
   private async onMan(message: Message) {
-    console.log(message)
+    message.channel.send({
+      files: [
+        {
+          attachment: this.imagePaths.man
+        }
+      ]
+    })
   }
 
   private async onWut(message: Message) {
-    console.log(message)
+    message.channel.send({
+      files: [
+        {
+          attachment: this.imagePaths.wut
+        }
+      ]
+    })
   }
 
   private async onPowerScaling(message: Message) {
     message.channel.send({
       files: [
         {
-          attachment: this.imagePaths.man
+          attachment: this.imagePaths.powerscaling
+        }
+      ]
+    })
+  }
+
+  private async onMirror(message: Message) {
+    message.channel.send({
+      files: [
+        {
+          attachment: this.imagePaths.mirror
+        }
+      ]
+    })
+  }
+
+  private async onWoot(message: Message) {
+    message.channel.send({
+      files: [
+        {
+          attachment: this.imagePaths.woot
+        }
+      ]
+    })
+  }
+
+  private async onStupid(message: Message) {
+    message.channel.send({
+      files: [
+        {
+          attachment: this.imagePaths.stupid
         }
       ]
     })
