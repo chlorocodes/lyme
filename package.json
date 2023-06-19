@@ -10,8 +10,7 @@
     "dev": "nodemon src/index.ts",
     "start": "forever start dist/index.js",
     "stop": "forever stop dist/index.js",
-    "restart": "forever restart dist/index.js",
-    "slash": "ts-node tasks/slash-commands.ts"
+    "restart": "forever restart dist/index.js"
   },
   "keywords": [],
   "dependencies": {
