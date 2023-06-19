@@ -1,15 +1,7 @@
 import { join } from 'path'
-import {
-  Client,
-  Collection,
-  GatewayIntentBits,
-  GuildMember,
-  Message
-} from 'discord.js'
+import { Client, GatewayIntentBits, GuildMember, Message } from 'discord.js'
 import { v2 } from '@google-cloud/translate'
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from 'openai'
-import { commands } from './commands'
-import type { Command } from './commands/core/Command'
 
 const assetsFolder = join(__dirname, 'assets')
 
@@ -27,7 +19,7 @@ export class Lyme {
   private token: string
   private id: string
   private channelId: string
-  private commands: Collection<string, Command>
+  private roleId: string
   private admin: { id: string; username: string }
   private translator: v2.Translate
   private imagePaths: Record<ImagePath, string>
@@ -38,6 +30,7 @@ export class Lyme {
     this.token = process.env.DISCORD_TOKEN as string
     this.id = '1110372412534571059'
     this.channelId = '1110394309724876920'
+    this.roleId = '1110387937952153643'
     this.client = new Client({
       intents: [
         GatewayIntentBits.Guilds,
@@ -46,7 +39,6 @@ export class Lyme {
         GatewayIntentBits.MessageContent
       ]
     })
-    this.commands = commands as Collection<string, Command>
     this.admin = {
       id: '320054778371637250',
       username: 'chloro 𝕀𝕍'
@@ -93,6 +85,10 @@ export class Lyme {
 
     if (message.mentions.users.get(this.id)) {
       return this.onBotMention(message)
+    }
+
+    if (message.mentions.roles.get(this.roleId)) {
+      return this.onRoleMention(message)
     }
 
     const msg = message.content.trim().toLowerCase()
@@ -162,6 +158,10 @@ export class Lyme {
     this.handleDiscussionWithBot(message)
   }
 
+  private onRoleMention(message: Message) {
+    this.handleDiscussionWithBot(message)
+  }
+
   private onReplyToBot(message: Message) {
     this.handleDiscussionWithBot(message)
   }
@@ -180,6 +180,8 @@ export class Lyme {
       this.conversation.push(response)
       if (response.content?.startsWith('As an AI language model,')) {
         response.content = response.content.slice(25)
+      } else if (response.content?.startsWith('As an AI assistant,')) {
+        response.content = response.content.slice(20)
       }
       message.reply(response.content ?? 'Unable to generate a response')
     } catch (error) {
