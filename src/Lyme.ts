@@ -177,7 +177,12 @@ export class Lyme {
       })
       const response = chatCompletion.data.choices[0]
         .message as ChatCompletionRequestMessage
+
       this.conversation.push(response)
+      if (this.conversation.length > 10) {
+        this.conversation = this.conversation.slice(-10)
+      }
+
       if (response.content?.startsWith('As an AI language model,')) {
         response.content = response.content.slice(25)
       } else if (response.content?.startsWith('As an AI assistant,')) {
