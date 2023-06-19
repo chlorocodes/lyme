@@ -169,6 +169,11 @@ export class Lyme {
   }
 
   private async handleDiscussionWithBot(message: Message) {
+    if (message.author.username === 'o_kayy') {
+      message.reply('Touch grass bro, come back tomorrow')
+      return
+    }
+
     const content = message.content.trim()
     this.conversation.push({ role: 'user', content })
 
