@@ -174,29 +174,9 @@ export class Lyme {
 
   private async handleDiscussionWithBot(message: Message) {
     if (message.author.username === 'o_kayy') {
-      if (message.channel.id !== this.channelId) {
-        message.reply(
-          'O-kay, you are only allowed to interact with me in the #lyme channel. Additionally, every message you send to me must begin with "Please" and must end with "Thank you/thanks". An example: "@Lyme please tell me how to be a better person, thank you'
-        )
-        return
-      } else if (
-        !message.content.toLowerCase().startsWith('please') &&
-        !message.content
-          .toLowerCase()
-          .startsWith('<@1110372412534571059> please')
-      ) {
-        message.reply('O-kay, you must begin every message with "Please"')
-        return
-      } else if (
-        !message.content.toLowerCase().endsWith('thanks') &&
-        !message.content.toLowerCase().endsWith('thank you')
-      ) {
-        message.reply(
-          'O-kay, you must end every message with "Thanks" or "Thank you'
-        )
-        return
-      }
+      return this.handleMessageFromOkay(message)
     }
+
     const content = message.content.trim()
     this.conversation.push({ role: 'user', content })
 
@@ -228,6 +208,32 @@ export class Lyme {
     } catch (error) {
       console.error(error)
       message.reply('Unable to generate a response')
+    }
+  }
+
+  private async handleMessageFromOkay(message: Message) {
+    if (message.channel.id !== this.channelId) {
+      message.reply(
+        'O-kay, you are only allowed to interact with me in the #lyme channel. Additionally, every message you send to me must begin with "Please" and must end with "Thank you/thanks". An example: "@Lyme please tell me how to be a better person, thank you'
+      )
+      return
+    } else if (
+      !message.content.toLowerCase().startsWith('please') &&
+      !message.content.toLowerCase().startsWith(`<@${this.id}> please`) &&
+      !message.content.toLowerCase().startsWith(`<@${this.roleId}> please`)
+    ) {
+      message.reply(
+        'O-kay, you must begin every message with "Please". An example: "Please tell me how to be a better person, thanks.'
+      )
+      return
+    } else if (
+      !message.content.toLowerCase().endsWith('thanks') &&
+      !message.content.toLowerCase().endsWith('thank you')
+    ) {
+      message.reply(
+        'O-kay, you must end every message with "Thanks" or "Thank you. An example: "Please tell me how to be a better person, thanks.'
+      )
+      return
     }
   }
 
