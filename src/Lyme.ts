@@ -28,6 +28,7 @@ export class Lyme {
   private imagePaths: Record<ImagePath, string>
   private openai: OpenAIApi
   private conversation: ChatCompletionRequestMessage[]
+  private okMessageCount: number
 
   constructor() {
     this.token = process.env.DISCORD_TOKEN as string
@@ -66,6 +67,13 @@ export class Lyme {
       })
     )
     this.conversation = []
+    this.okMessageCount = 0
+
+    const oneDay = 1000 * 60 * 60 * 24
+
+    setInterval(() => {
+      this.okMessageCount = 0
+    }, oneDay)
   }
 
   run() {
@@ -214,12 +222,19 @@ export class Lyme {
   }
 
   private async handleMessagesFromOkay(message: Message) {
+    if (this.okMessageCount > 0) {
+      message.reply(
+        'O-kay, you are only to message me once per day due to your behavior. See you tomorrow!'
+      )
+      return
+    }
+
     if (
       message.channel.id !== this.localChannelId &&
       message.channel.id !== this.remoteChannelId
     ) {
       message.reply(
-        'O-kay, you are only allowed to interact with me in the #lyme channel. Additionally, every message you send to me must begin with "Please" and must end with "Thank you/thanks". An example: "@Lyme please tell me how to be a better person, thank you'
+        'O-kay, you are only allowed to interact with me in the #lyme channel. Additionally, every message you send to me must begin with "Please" and must end with "Thank you/thanks". An example: "@Lyme please tell me how to be a better person, thank you." Lastly, you are only allowed to message me once per day until my creator sees that you have made personal improvement in your behavior'
       )
       return
     } else if (
@@ -268,6 +283,7 @@ export class Lyme {
       }
 
       message.reply(response.content ?? 'Unable to generate a response')
+      this.okMessageCount += 1
     } catch (error) {
       console.error(error)
       message.reply('Unable to generate a response')
