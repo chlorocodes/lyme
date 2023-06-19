@@ -179,23 +179,24 @@ export class Lyme {
           'O-kay, you are only allowed to interact with me in the #lyme channel. Additionally, every message you send to me must begin with "Please" and must end with "Thank you/thanks". An example: "@Lyme please tell me how to be a better person, thank you'
         )
         return
+      } else if (
+        !message.content.toLowerCase().startsWith('please') &&
+        !message.content
+          .toLowerCase()
+          .startsWith('<@1110372412534571059> please')
+      ) {
+        message.reply('O-kay, you must begin every message with "Please"')
+        return
+      } else if (
+        !message.content.toLowerCase().endsWith('thanks') &&
+        !message.content.toLowerCase().endsWith('thank you')
+      ) {
+        message.reply(
+          'O-kay, you must end every message with "Thanks" or "Thank you'
+        )
+        return
       }
-    } else if (
-      !message.content.toLowerCase().startsWith('please') &&
-      !message.content.toLowerCase().startsWith('<@1110372412534571059> please')
-    ) {
-      message.reply('O-kay, you must begin every message with "Please"')
-      return
-    } else if (
-      !message.content.toLowerCase().endsWith('thanks') &&
-      !message.content.toLowerCase().endsWith('thank you')
-    ) {
-      message.reply(
-        'O-kay, you must end every message with "Thanks" or "Thank you'
-      )
-      return
     }
-
     const content = message.content.trim()
     this.conversation.push({ role: 'user', content })
 
@@ -229,6 +230,8 @@ export class Lyme {
       message.reply('Unable to generate a response')
     }
   }
+
+  private async onOkay() {}
 
   private async onAbuse(message: Message) {
     if (message.author.id !== this.admin.id) {
