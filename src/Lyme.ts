@@ -176,7 +176,7 @@ export class Lyme {
 
   private async handleDiscussionWithBot(message: Message) {
     if (message.author.username === 'o_kayy') {
-      return this.handleMessageFromOkay(message)
+      return this.handleMessagesFromOkay(message)
     }
 
     const content = message.content.trim()
@@ -213,7 +213,7 @@ export class Lyme {
     }
   }
 
-  private async handleMessageFromOkay(message: Message) {
+  private async handleMessagesFromOkay(message: Message) {
     if (
       message.channel.id !== this.localChannelId &&
       message.channel.id !== this.remoteChannelId
@@ -242,6 +242,8 @@ export class Lyme {
     }
 
     try {
+      const content = message.content.trim()
+      this.conversation.push({ role: 'user', content })
       const chatCompletion = await this.openai.createChatCompletion({
         model: 'gpt-3.5-turbo',
         messages: this.conversation
