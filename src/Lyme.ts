@@ -7,6 +7,7 @@ import {
   Message
 } from 'discord.js'
 import { v2 } from '@google-cloud/translate'
+import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from 'openai'
 import { commands } from './commands'
 import type { Command } from './commands/core/Command'
 
@@ -30,6 +31,8 @@ export class Lyme {
   private admin: { id: string; username: string }
   private translator: v2.Translate
   private imagePaths: Record<ImagePath, string>
+  private openai: OpenAIApi
+  private conversation: ChatCompletionRequestMessage[]
 
   constructor() {
     this.token = process.env.DISCORD_TOKEN as string
@@ -61,6 +64,12 @@ export class Lyme {
       woot: join(assetsFolder, 'woot.jpeg'),
       bitchPls: join(assetsFolder, 'bitchPls.jpg')
     }
+    this.openai = new OpenAIApi(
+      new Configuration({
+        apiKey: process.env.CHATGPT_TOKEN
+      })
+    )
+    this.conversation = []
   }
 
   run() {
@@ -150,74 +159,32 @@ export class Lyme {
   }
 
   private onBotMention(message: Message) {
-    console.log('onBotMention')
-    let content = message.content.toLowerCase().trim()
-
-    if (content.startsWith(`<@${this.id}>`)) {
-      content = content.slice(`<@${this.id}>`.length).trim()
-    }
-
-    const fuInsults = [
-      'fu',
-      'f u',
-      'fuc u',
-      'fuck u',
-      'fk u',
-      'fuck you',
-      'fuck yu',
-      'fuck yourself',
-      'go fuck yourself'
-    ]
-
-    const bitchInsults = [
-      'bitch',
-      "you're a bitch",
-      'your a bitch',
-      'u bitch',
-      'ur a bitch',
-      'youre a bitch'
-    ]
-
-    const gayInsults = [
-      'gay',
-      'ur gay',
-      'u gay',
-      'your gay',
-      'youre gay',
-      "you're gay"
-    ]
-
-    if (fuInsults.includes(content)) {
-      message.reply(':angry:')
-    } else if (bitchInsults.includes(content)) {
-      message.reply("nah you're the lil bitch")
-    } else if (gayInsults.includes(content)) {
-      message.reply('y u projecting though')
-    }
-
-    if (content === 'good bot') {
-      message.reply('thanks man :face_holding_back_tears:')
-    }
-
-    if (content.startsWith('hi')) {
-      message.reply('hi :blush:')
-    }
+    this.handleDiscussionWithBot(message)
   }
 
   private onReplyToBot(message: Message) {
-    console.log('onReplyToBot')
-    if (message.content.toLowerCase().startsWith('good bot')) {
-      message.reply('thanks man :face_holding_back_tears:')
-    } else if (message.content.toLowerCase().startsWith('bad bot')) {
-      message.reply('sorry :cry:')
-    } else if (
-      message.content === '!list' &&
-      message.author.id === this.admin.id &&
-      message.mentions.repliedUser
-    ) {
-      message.reply(
-        `${message.mentions.repliedUser.username} has been added to Chloro's vengeance list. :saluting_face:`
-      )
+    this.handleDiscussionWithBot(message)
+  }
+
+  private async handleDiscussionWithBot(message: Message) {
+    const content = message.content.trim()
+    this.conversation.push({ role: 'user', content })
+
+    try {
+      const chatCompletion = await this.openai.createChatCompletion({
+        model: 'gpt-3.5-turbo',
+        messages: this.conversation
+      })
+      const response = chatCompletion.data.choices[0]
+        .message as ChatCompletionRequestMessage
+      this.conversation.push(response)
+      if (response.content?.startsWith('As an AI language model,')) {
+        response.content = response.content.slice(25)
+      }
+      message.reply(response.content ?? 'Unable to generate a response')
+    } catch (error) {
+      console.error(error)
+      message.reply('Unable to generate a response')
     }
   }
 
