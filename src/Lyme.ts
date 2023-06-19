@@ -20,7 +20,8 @@ export class Lyme {
   private client: Client
   private token: string
   private id: string
-  private channelId: string
+  private localChannelId: string
+  private remoteChannelId: string
   private roleId: string
   private admin: { id: string; username: string }
   private translator: v2.Translate
@@ -31,7 +32,8 @@ export class Lyme {
   constructor() {
     this.token = process.env.DISCORD_TOKEN as string
     this.id = '1110372412534571059'
-    this.channelId = '1113260064552259634'
+    this.localChannelId = '1113260064552259634'
+    this.remoteChannelId = '1110394309724876920'
     this.roleId = '1110387937952153643'
     this.client = new Client({
       intents: [
@@ -212,10 +214,10 @@ export class Lyme {
   }
 
   private async handleMessageFromOkay(message: Message) {
-    console.log('Message channel', message.channel.id)
-    console.log('this channel', this.channelId)
-
-    if (message.channel.id !== this.channelId) {
+    if (
+      message.channel.id !== this.localChannelId &&
+      message.channel.id !== this.remoteChannelId
+    ) {
       message.reply(
         'O-kay, you are only allowed to interact with me in the #lyme channel. Additionally, every message you send to me must begin with "Please" and must end with "Thank you/thanks". An example: "@Lyme please tell me how to be a better person, thank you'
       )
