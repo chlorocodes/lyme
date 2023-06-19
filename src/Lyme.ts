@@ -31,7 +31,7 @@ export class Lyme {
   constructor() {
     this.token = process.env.DISCORD_TOKEN as string
     this.id = '1110372412534571059'
-    this.channelId = '1110394309724876920'
+    this.channelId = '1113260064552259634'
     this.roleId = '1110387937952153643'
     this.client = new Client({
       intents: [
@@ -212,6 +212,9 @@ export class Lyme {
   }
 
   private async handleMessageFromOkay(message: Message) {
+    console.log('Message channel', message.channel.id)
+    console.log('this channel', this.channelId)
+
     if (message.channel.id !== this.channelId) {
       message.reply(
         'O-kay, you are only allowed to interact with me in the #lyme channel. Additionally, every message you send to me must begin with "Please" and must end with "Thank you/thanks". An example: "@Lyme please tell me how to be a better person, thank you'
@@ -235,9 +238,37 @@ export class Lyme {
       )
       return
     }
-  }
 
-  private async onOkay() {}
+    try {
+      const chatCompletion = await this.openai.createChatCompletion({
+        model: 'gpt-3.5-turbo',
+        messages: this.conversation
+      })
+      const response = chatCompletion.data.choices[0]
+        .message as ChatCompletionRequestMessage
+
+      this.conversation.push(response)
+      if (this.conversation.length > 10) {
+        this.conversation = this.conversation.slice(-10)
+      }
+
+      if (response.content?.startsWith('As an AI language model,')) {
+        response.content = response.content.slice(25)
+      } else if (response.content?.startsWith('As an AI assistant,')) {
+        response.content = response.content.slice(20)
+      }
+
+      if (blacklistedWords.includes(response.content ?? '')) {
+        response.content =
+          'I will not be providing a response because it is using a disallowed word. Please ask better questions.'
+      }
+
+      message.reply(response.content ?? 'Unable to generate a response')
+    } catch (error) {
+      console.error(error)
+      message.reply('Unable to generate a response')
+    }
+  }
 
   private async onAbuse(message: Message) {
     if (message.author.id !== this.admin.id) {

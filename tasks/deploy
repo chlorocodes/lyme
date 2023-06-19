@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -e
+set -x
+
+npm run clean
+npm run build
+
+ssh -t pi << EOF
+  cd ~/Code/lyme
+  node --version
+  npm --version
+EOF
