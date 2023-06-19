@@ -170,7 +170,6 @@ export class Lyme {
 
   private async handleDiscussionWithBot(message: Message) {
     if (message.author.username === 'o_kayy') {
-      message.reply('Touch grass bro, come back tomorrow')
       return
     }
 
