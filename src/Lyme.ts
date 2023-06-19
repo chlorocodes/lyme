@@ -14,6 +14,8 @@ type ImagePath =
   | 'woot'
   | 'bitchPls'
 
+const blacklistedWords = ['nigger']
+
 export class Lyme {
   private client: Client
   private token: string
@@ -188,6 +190,12 @@ export class Lyme {
       } else if (response.content?.startsWith('As an AI assistant,')) {
         response.content = response.content.slice(20)
       }
+
+      if (blacklistedWords.includes(response.content ?? '')) {
+        response.content =
+          'I will not be providing a response because it is using a disallowed word. Please ask better questions.'
+      }
+
       message.reply(response.content ?? 'Unable to generate a response')
     } catch (error) {
       console.error(error)
