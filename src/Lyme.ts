@@ -176,7 +176,7 @@ export class Lyme {
     if (message.author.username === 'o_kayy') {
       if (message.channel.id !== this.channelId) {
         message.reply(
-          'O-kay, you are only allowed to interact with me in the #lyme channel. Additionally, every message you send to me must begin with "Please" and must end with "Thank you". An example: "@Lyme please tell me how to be a better person, thank you'
+          'O-kay, you are only allowed to interact with me in the #lyme channel. Additionally, every message you send to me must begin with "Please" and must end with "Thank you/thanks". An example: "@Lyme please tell me how to be a better person, thank you'
         )
         return
       }
