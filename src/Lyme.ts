@@ -183,9 +183,10 @@ export class Lyme {
   }
 
   private async handleDiscussionWithBot(message: Message) {
-    if (message.author.username === 'o_kayy') {
-      return this.handleMessagesFromOkay(message)
-    }
+    /** Temporarily disable this */
+    // if (message.author.username === 'o_kayy') {
+    //   return this.handleMessagesFromOkay(message)
+    // }
 
     const content = message.content.trim()
     this.conversation.push({ role: 'user', content })
