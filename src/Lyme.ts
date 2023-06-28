@@ -109,7 +109,11 @@ export class Lyme {
       return this.onTranslate(message)
     }
 
-    if (msg.startsWith('!wut') || msg.startsWith('!huh')) {
+    if (
+      msg.startsWith('!wut') ||
+      msg.startsWith('!huh') ||
+      msg.startsWith('!wat')
+    ) {
       return this.onWut(message)
     }
 
