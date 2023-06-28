@@ -186,17 +186,15 @@ export class Lyme {
       message.channel.id !== this.channelId &&
       message.channel.id !== this.otherChannelId
     ) {
-      message.guild?.channels.cache.forEach((channel) => {
-        if (channel.name === '🟢・lyme') {
-          console.log(channel)
-        }
-      })
       message.reply(
-        `If you would like to talk to me, please head over to the <#${this.channelId}> channel`
+        `If you would like to talk to me, please head over to <#${this.channelId}> and ask me anything :blush:`
       )
-      return
+    } else {
+      this.onChatGPT(message)
     }
+  }
 
+  private async onChatGPT(message: Message) {
     const content = message.content.trim()
     this.conversation.push({ role: 'user', content })
 
