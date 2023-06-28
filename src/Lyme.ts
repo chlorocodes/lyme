@@ -93,6 +93,10 @@ export class Lyme {
 
     const msg = message.content.trim().toLowerCase()
 
+    if (msg.startsWith('!confidantes')) {
+      return this.onConfidantes(message)
+    }
+
     if (msg.startsWith('!cringidantes')) {
       return this.onCringidantes(message)
     }
@@ -162,9 +166,7 @@ export class Lyme {
 
   private onCringidantes(message: Message) {
     console.log('onCringidantes')
-    message.reply(
-      'tHe coNfIdaNteS kNow wHaT’s iN yOur mOm’s pAnTs, cAUse wE wATer hEr pLanTs – 🤓'
-    )
+    message.reply('Cringidantes are not welcome here')
   }
 
   private onBotMention(message: Message) {
