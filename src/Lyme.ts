@@ -182,15 +182,15 @@ export class Lyme {
   }
 
   private async handleDiscussionWithBot(message: Message) {
-    /** Temporarily disable this */
-    // if (message.author.username === 'o_kayy') {
-    //   return this.handleMessagesFromOkay(message)
-    // }
-
     if (
       message.channel.id !== this.localChannelId &&
       message.channel.id !== this.remoteChannelId
     ) {
+      message.guild?.channels.cache.forEach((channel) => {
+        if (channel.name === '🟢・lyme') {
+          console.log(channel)
+        }
+      })
       message.reply(
         `If you would like to talk to me, please head over to the <#${this.remoteChannelId}> channel`
       )
@@ -225,75 +225,6 @@ export class Lyme {
       }
 
       message.reply(response.content ?? 'Unable to generate a response')
-    } catch (error) {
-      console.error(error)
-      message.reply('Unable to generate a response')
-    }
-  }
-
-  private async handleMessagesFromOkay(message: Message) {
-    if (this.okMessageCount > 0) {
-      message.reply(
-        'O-kay, you are only to message me once per day due to your behavior. See you tomorrow!'
-      )
-      return
-    }
-
-    if (
-      message.channel.id !== this.localChannelId &&
-      message.channel.id !== this.remoteChannelId
-    ) {
-      message.reply(
-        'O-kay, you are only allowed to interact with me in the #lyme channel. Additionally, every message you send to me must begin with "Please" and must end with "Thank you/thanks". An example: "@Lyme please tell me how to be a better person, thank you." Lastly, you are only allowed to message me once per day until my creator sees that you have made personal improvement in your behavior'
-      )
-      return
-    } else if (
-      !message.content.toLowerCase().startsWith('please') &&
-      !message.content.toLowerCase().startsWith(`<@${this.id}> please`) &&
-      !message.content.toLowerCase().startsWith(`<@${this.roleId}> please`)
-    ) {
-      message.reply(
-        'O-kay, you must begin every message with "Please". An example: "Please tell me how to be a better person, thanks.'
-      )
-      return
-    } else if (
-      !message.content.toLowerCase().endsWith('thanks') &&
-      !message.content.toLowerCase().endsWith('thank you')
-    ) {
-      message.reply(
-        'O-kay, you must end every message with "Thanks" or "Thank you. An example: "Please tell me how to be a better person, thanks.'
-      )
-      return
-    }
-
-    try {
-      const content = message.content.trim()
-      this.conversation.push({ role: 'user', content })
-      const chatCompletion = await this.openai.createChatCompletion({
-        model: 'gpt-3.5-turbo',
-        messages: this.conversation
-      })
-      const response = chatCompletion.data.choices[0]
-        .message as ChatCompletionRequestMessage
-
-      this.conversation.push(response)
-      if (this.conversation.length > 10) {
-        this.conversation = this.conversation.slice(-10)
-      }
-
-      if (response.content?.startsWith('As an AI language model,')) {
-        response.content = response.content.slice(25)
-      } else if (response.content?.startsWith('As an AI assistant,')) {
-        response.content = response.content.slice(20)
-      }
-
-      if (blacklistedWords.includes(response.content ?? '')) {
-        response.content =
-          'I will not be providing a response because it is using a disallowed word. Please ask better questions.'
-      }
-
-      message.reply(response.content ?? 'Unable to generate a response')
-      this.okMessageCount += 1
     } catch (error) {
       console.error(error)
       message.reply('Unable to generate a response')
