@@ -91,18 +91,6 @@ export class Lyme {
       return
     }
 
-    if (message.mentions.repliedUser?.id === this.id) {
-      return this.onReplyToBot(message)
-    }
-
-    if (message.mentions.users.get(this.id)) {
-      return this.onBotMention(message)
-    }
-
-    if (message.mentions.roles.get(this.roleId)) {
-      return this.onRoleMention(message)
-    }
-
     const msg = message.content.trim().toLowerCase()
 
     if (msg.startsWith('!confidantes')) {
@@ -152,6 +140,17 @@ export class Lyme {
     if (message.content.trim().startsWith('!debug')) {
       console.log(message)
     }
+    if (message.mentions.repliedUser?.id === this.id) {
+      return this.onReplyToBot(message)
+    }
+
+    if (message.mentions.users.get(this.id)) {
+      return this.onBotMention(message)
+    }
+
+    if (message.mentions.roles.get(this.roleId)) {
+      return this.onRoleMention(message)
+    }
   }
 
   private onConfidantes(message: Message) {
@@ -187,6 +186,16 @@ export class Lyme {
     // if (message.author.username === 'o_kayy') {
     //   return this.handleMessagesFromOkay(message)
     // }
+
+    if (
+      message.channel.id !== this.localChannelId &&
+      message.channel.id !== this.remoteChannelId
+    ) {
+      message.reply(
+        `If you would like to talk to me, please head over to the <#${this.remoteChannelId}> channel`
+      )
+      return
+    }
 
     const content = message.content.trim()
     this.conversation.push({ role: 'user', content })
