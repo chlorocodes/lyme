@@ -20,8 +20,8 @@ export class Lyme {
   private client: Client
   private token: string
   private id: string
-  private localChannelId: string
-  private remoteChannelId: string
+  private channelId: string
+  private otherChannelId: string
   private roleId: string
   private admin: { id: string; username: string }
   private translator: v2.Translate
@@ -33,8 +33,8 @@ export class Lyme {
   constructor() {
     this.token = process.env.DISCORD_TOKEN as string
     this.id = '1110372412534571059'
-    this.localChannelId = '1113260064552259634'
-    this.remoteChannelId = '1110394309724876920'
+    this.channelId = '1113260064552259634'
+    this.otherChannelId = '1110394309724876920'
     this.roleId = '1110387937952153643'
     this.client = new Client({
       intents: [
@@ -183,8 +183,8 @@ export class Lyme {
 
   private async handleDiscussionWithBot(message: Message) {
     if (
-      message.channel.id !== this.localChannelId &&
-      message.channel.id !== this.remoteChannelId
+      message.channel.id !== this.channelId &&
+      message.channel.id !== this.otherChannelId
     ) {
       message.guild?.channels.cache.forEach((channel) => {
         if (channel.name === '🟢・lyme') {
@@ -192,7 +192,7 @@ export class Lyme {
         }
       })
       message.reply(
-        `If you would like to talk to me, please head over to the <#${this.remoteChannelId}> channel`
+        `If you would like to talk to me, please head over to the <#${this.channelId}> channel`
       )
       return
     }
