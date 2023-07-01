@@ -50,7 +50,7 @@ export class Lyme {
     }
     this.translator = new v2.Translate({
       projectId: 'lyme-390002',
-      keyFilename: join(__dirname, 'google-keys.json')
+      keyFilename: join(__dirname, 'credentials', 'google-keys.json')
     })
     this.imagePaths = {
       man: join(assetsFolder, 'man.png'),
