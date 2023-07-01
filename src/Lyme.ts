@@ -1,4 +1,4 @@
-import { join } from 'path'
+import { join } from 'node:path'
 import { Client, GatewayIntentBits, GuildMember, Message } from 'discord.js'
 import { v2 } from '@google-cloud/translate'
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from 'openai'
@@ -63,7 +63,7 @@ export class Lyme {
     }
     this.openai = new OpenAIApi(
       new Configuration({
-        apiKey: process.env.CHATGPT_TOKEN
+        apiKey: process.env.OPENAI_TOKEN
       })
     )
     this.conversation = []
