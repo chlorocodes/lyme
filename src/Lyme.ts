@@ -28,7 +28,6 @@ export class Lyme {
   private imagePaths: Record<ImagePath, string>
   private openai: OpenAIApi
   private conversation: ChatCompletionRequestMessage[]
-  private okMessageCount: number
 
   constructor() {
     this.token = process.env.DISCORD_TOKEN as string
@@ -67,13 +66,6 @@ export class Lyme {
       })
     )
     this.conversation = []
-    this.okMessageCount = 0
-
-    const oneDay = 1000 * 60 * 60 * 24
-
-    setInterval(() => {
-      this.okMessageCount = 0
-    }, oneDay)
   }
 
   run() {
@@ -137,6 +129,14 @@ export class Lyme {
       return this.onBitchPls(message)
     }
 
+    if (
+      message.author.username.trim() === '.zselect' &&
+      msg.startsWith('good morning')
+    ) {
+      message.reply('Good morning Neko :blush:')
+      return
+    }
+
     if (message.content.trim().startsWith('!debug')) {
       console.log(message)
     }
@@ -198,7 +198,8 @@ export class Lyme {
 
   private async onChatGPT(message: Message) {
     const content = message.content.trim()
-    this.conversation.push({ role: 'user', content })
+    const name = message.author.username.replaceAll('.', '-')
+    this.conversation.push({ role: 'user', content, name })
 
     try {
       const chatCompletion = await this.openai.createChatCompletion({
