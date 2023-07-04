@@ -137,6 +137,15 @@ export class Lyme {
       return
     }
 
+    if (
+      message.author.username.trim() === '.zselect' &&
+      (msg.startsWith('good night all') ||
+        msg.startsWith('good night everyone'))
+    ) {
+      message.reply('Good night Neko :blush:')
+      return
+    }
+
     if (message.content.trim().startsWith('!debug')) {
       console.log(message)
     }
