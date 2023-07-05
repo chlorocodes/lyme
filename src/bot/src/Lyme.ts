@@ -1,4 +1,4 @@
-import { join } from 'path'
+import { join } from 'node:path'
 import { Client, GatewayIntentBits, GuildMember, Message } from 'discord.js'
 import { v2 } from '@google-cloud/translate'
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from 'openai'
@@ -20,21 +20,20 @@ export class Lyme {
   private client: Client
   private token: string
   private id: string
-  private localChannelId: string
-  private remoteChannelId: string
+  private channelId: string
+  private otherChannelId: string
   private roleId: string
   private admin: { id: string; username: string }
   private translator: v2.Translate
   private imagePaths: Record<ImagePath, string>
   private openai: OpenAIApi
   private conversation: ChatCompletionRequestMessage[]
-  private okMessageCount: number
 
   constructor() {
     this.token = process.env.DISCORD_TOKEN as string
     this.id = '1110372412534571059'
-    this.localChannelId = '1113260064552259634'
-    this.remoteChannelId = '1110394309724876920'
+    this.channelId = '1113260064552259634'
+    this.otherChannelId = '1110394309724876920'
     this.roleId = '1110387937952153643'
     this.client = new Client({
       intents: [
@@ -50,7 +49,7 @@ export class Lyme {
     }
     this.translator = new v2.Translate({
       projectId: 'lyme-390002',
-      keyFilename: join(__dirname, 'google-keys.json')
+      keyFilename: join(__dirname, '..', 'google-keys.json')
     })
     this.imagePaths = {
       man: join(assetsFolder, 'man.png'),
@@ -63,22 +62,21 @@ export class Lyme {
     }
     this.openai = new OpenAIApi(
       new Configuration({
-        apiKey: process.env.CHATGPT_TOKEN
+        apiKey: process.env.OPENAI_TOKEN
       })
     )
     this.conversation = []
-    this.okMessageCount = 0
-
-    const oneDay = 1000 * 60 * 60 * 24
-
-    setInterval(() => {
-      this.okMessageCount = 0
-    }, oneDay)
   }
 
   run() {
     this.client.once('ready', this.onReady)
-    this.client.on('messageCreate', this.onMessageCreate)
+
+    if (process.env.NODE_ENV === 'production') {
+      this.client.on('messageCreate', this.onMessage)
+    } else {
+      this.client.on('messageCreate', this.onDebug)
+    }
+
     this.client.login(this.token)
   }
 
@@ -86,28 +84,12 @@ export class Lyme {
     console.log(`Ready! Logged in as ${c.user.tag}`)
   }
 
-  private onMessageCreate = async (message: Message) => {
+  private onMessage = async (message: Message) => {
     if (message.author.bot) {
       return
     }
 
-    if (message.mentions.repliedUser?.id === this.id) {
-      return this.onReplyToBot(message)
-    }
-
-    if (message.mentions.users.get(this.id)) {
-      return this.onBotMention(message)
-    }
-
-    if (message.mentions.roles.get(this.roleId)) {
-      return this.onRoleMention(message)
-    }
-
     const msg = message.content.trim().toLowerCase()
-
-    if (msg.startsWith('!confidantes')) {
-      return this.onConfidantes(message)
-    }
 
     if (msg.startsWith('!cringidantes')) {
       return this.onCringidantes(message)
@@ -121,7 +103,11 @@ export class Lyme {
       return this.onTranslate(message)
     }
 
-    if (msg.startsWith('!wut') || msg.startsWith('!huh')) {
+    if (
+      msg.startsWith('!wut') ||
+      msg.startsWith('!huh') ||
+      msg.startsWith('!wat')
+    ) {
       return this.onWut(message)
     }
 
@@ -149,9 +135,41 @@ export class Lyme {
       return this.onBitchPls(message)
     }
 
+    if (
+      message.author.username.trim() === '.zselect' &&
+      msg.startsWith('good morning')
+    ) {
+      message.reply('Good morning Neko :blush:')
+      return
+    }
+
+    if (
+      message.author.username.trim() === '.zselect' &&
+      (msg.startsWith('good night all') ||
+        msg.startsWith('good night everyone'))
+    ) {
+      message.reply('Good night Neko :blush:')
+      return
+    }
+
     if (message.content.trim().startsWith('!debug')) {
       console.log(message)
     }
+    if (message.mentions.repliedUser?.id === this.id) {
+      return this.onReplyToBot(message)
+    }
+
+    if (message.mentions.users.get(this.id)) {
+      return this.onBotMention(message)
+    }
+
+    if (message.mentions.roles.get(this.roleId)) {
+      return this.onRoleMention(message)
+    }
+  }
+
+  private onDebug = async (message: Message) => {
+    console.log(message)
   }
 
   private onConfidantes(message: Message) {
@@ -163,7 +181,9 @@ export class Lyme {
 
   private onCringidantes(message: Message) {
     console.log('onCringidantes')
-    message.reply('Cringidantes are not welcome here')
+    message.reply(
+      'tHe coNfIdaNteS kNow wHaT’s iN yOur mOm’s pAnTs, cAUse wE wATer hEr pLanTs – 🤓'
+    )
   }
 
   private onBotMention(message: Message) {
@@ -183,83 +203,24 @@ export class Lyme {
   }
 
   private async handleDiscussionWithBot(message: Message) {
-    /** Temporarily disable this */
-    // if (message.author.username === 'o_kayy') {
-    //   return this.handleMessagesFromOkay(message)
-    // }
-
-    const content = message.content.trim()
-    this.conversation.push({ role: 'user', content })
-
-    try {
-      const chatCompletion = await this.openai.createChatCompletion({
-        model: 'gpt-3.5-turbo',
-        messages: this.conversation
-      })
-      const response = chatCompletion.data.choices[0]
-        .message as ChatCompletionRequestMessage
-
-      this.conversation.push(response)
-      if (this.conversation.length > 10) {
-        this.conversation = this.conversation.slice(-10)
-      }
-
-      if (response.content?.startsWith('As an AI language model,')) {
-        response.content = response.content.slice(25)
-      } else if (response.content?.startsWith('As an AI assistant,')) {
-        response.content = response.content.slice(20)
-      }
-
-      if (blacklistedWords.includes(response.content ?? '')) {
-        response.content =
-          'I will not be providing a response because it is using a disallowed word. Please ask better questions.'
-      }
-
-      message.reply(response.content ?? 'Unable to generate a response')
-    } catch (error) {
-      console.error(error)
-      message.reply('Unable to generate a response')
+    if (
+      message.channel.id !== this.channelId &&
+      message.channel.id !== this.otherChannelId
+    ) {
+      message.reply(
+        `If you would like to talk to me, please head over to <#${this.channelId}> and ask me anything :blush:`
+      )
+    } else {
+      this.onChatGPT(message)
     }
   }
 
-  private async handleMessagesFromOkay(message: Message) {
-    if (this.okMessageCount > 0) {
-      message.reply(
-        'O-kay, you are only to message me once per day due to your behavior. See you tomorrow!'
-      )
-      return
-    }
-
-    if (
-      message.channel.id !== this.localChannelId &&
-      message.channel.id !== this.remoteChannelId
-    ) {
-      message.reply(
-        'O-kay, you are only allowed to interact with me in the #lyme channel. Additionally, every message you send to me must begin with "Please" and must end with "Thank you/thanks". An example: "@Lyme please tell me how to be a better person, thank you." Lastly, you are only allowed to message me once per day until my creator sees that you have made personal improvement in your behavior'
-      )
-      return
-    } else if (
-      !message.content.toLowerCase().startsWith('please') &&
-      !message.content.toLowerCase().startsWith(`<@${this.id}> please`) &&
-      !message.content.toLowerCase().startsWith(`<@${this.roleId}> please`)
-    ) {
-      message.reply(
-        'O-kay, you must begin every message with "Please". An example: "Please tell me how to be a better person, thanks.'
-      )
-      return
-    } else if (
-      !message.content.toLowerCase().endsWith('thanks') &&
-      !message.content.toLowerCase().endsWith('thank you')
-    ) {
-      message.reply(
-        'O-kay, you must end every message with "Thanks" or "Thank you. An example: "Please tell me how to be a better person, thanks.'
-      )
-      return
-    }
+  private async onChatGPT(message: Message) {
+    const content = message.content.trim()
+    const name = message.author.username.replaceAll('.', '-')
+    this.conversation.push({ role: 'user', content, name })
 
     try {
-      const content = message.content.trim()
-      this.conversation.push({ role: 'user', content })
       const chatCompletion = await this.openai.createChatCompletion({
         model: 'gpt-3.5-turbo',
         messages: this.conversation
@@ -284,7 +245,6 @@ export class Lyme {
       }
 
       message.reply(response.content ?? 'Unable to generate a response')
-      this.okMessageCount += 1
     } catch (error) {
       console.error(error)
       message.reply('Unable to generate a response')

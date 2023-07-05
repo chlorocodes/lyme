@@ -1,8 +1,17 @@
 {
   "name": "@lyme/monorepo",
   "version": "1.0.0",
-  "scripts": {},
+  "scripts": {
+    "init": "npm run init --workspaces --if-present",
+    "dev": "concurrently -n server,website,bot -c blue,green,magenta \"npm:dev:server\" \"npm:dev:website\" \"npm:dev:bot\"",
+    "dev:server": "npm run dev --workspace=./src/server",
+    "dev:website": "npm run dev --workspace=./src/website",
+    "dev:bot": "npm run dev --workspace=./src/bot"
+  },
   "workspaces": [
     "src/*"
-  ]
+  ],
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
 }

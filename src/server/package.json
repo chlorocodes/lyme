@@ -2,6 +2,7 @@
   "name": "@lyme/server",
   "version": "1.0.0",
   "scripts": {
+    "init": "npx prisma migrate dev",
     "build": "tsc",
     "clean": "rm -r dist",
     "dev": "nodemon src/index.ts",
@@ -11,6 +12,7 @@
   "dependencies": {
     "@fastify/static": "^6.10.2",
     "@fastify/type-provider-typebox": "^3.2.0",
+    "@prisma/client": "^4.16.1",
     "@sinclair/typebox": "^0.28.19",
     "fastify": "^4.18.0",
     "prisma": "^4.16.1"

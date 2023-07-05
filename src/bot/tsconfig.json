@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "dist",
-    "target": "es2016",
+    "target": "ESNext",
     "module": "commonjs",
     "esModuleInterop": true,
     "strict": true,
@@ -9,5 +9,5 @@
     "resolveJsonModule": true,
     "noImplicitAny": true
   },
-  "include": ["src"]
+  "include": ["src", "typedefs"]
 }

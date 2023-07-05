@@ -1,7 +1,7 @@
 {
-  "name": "@lyme/bot",
+  "name": "lyme",
   "version": "1.0.0",
-  "description": "The Discord bot named Lyme",
+  "description": "Discord bot for Lyme",
   "scripts": {
     "clean": "rm -r dist",
     "build": "npm run compile && npm run copyFiles",
