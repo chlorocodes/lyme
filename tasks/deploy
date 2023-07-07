@@ -7,7 +7,7 @@ npm run clean
 npm run build
 
 ssh -t pi << EOF
-  cd ~/Code/lyme
+  cd ~/Code/mynt
   node --version
   npm --version
 EOF

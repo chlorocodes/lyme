@@ -1,7 +1,7 @@
 {
-  "name": "lyme",
+  "name": "mynt",
   "version": "1.0.0",
-  "description": "Discord bot for Lyme",
+  "description": "Discord bot for mynt",
   "scripts": {
     "clean": "rm -r dist",
     "build": "npm run compile && npm run copyFiles",

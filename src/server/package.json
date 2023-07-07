@@ -1,5 +1,5 @@
 {
-  "name": "@lyme/server",
+  "name": "@mynt/server",
   "version": "1.0.0",
   "scripts": {
     "init": "npx prisma migrate dev",

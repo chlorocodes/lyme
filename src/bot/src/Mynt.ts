@@ -16,7 +16,7 @@ type ImagePath =
 
 const blacklistedWords = ['nigger']
 
-export class Lyme {
+export class Mynt {
   private client: Client
   private token: string
   private id: string

@@ -1,5 +1,5 @@
 {
-  "name": "@lyme/monorepo",
+  "name": "@mynt/monorepo",
   "version": "1.0.0",
   "scripts": {
     "init": "npm run init --workspaces --if-present",
