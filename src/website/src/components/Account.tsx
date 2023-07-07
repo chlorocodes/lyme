@@ -1,6 +1,6 @@
 import logo from '../assets/mynt.png'
 
-export function Home() {
+export function Account() {
   return (
     <>
       <h1 style={{ color: 'white' }}>This will be the home page</h1>

@@ -19,13 +19,14 @@ export type TypedRouter = FastifyInstance<
   TypeBoxTypeProvider
 >
 
-export type RouteHandler<Schema extends FastifySchema> = RouteHandlerMethod<
-  RawServerDefault,
-  RawRequestDefaultExpression,
-  RawReplyDefaultExpression,
-  RouteGenericInterface,
-  ContextConfigDefault,
-  Schema,
-  TypeBoxTypeProvider,
-  FastifyBaseLogger
->
+export type RouteHandler<Schema extends FastifySchema = FastifySchema> =
+  RouteHandlerMethod<
+    RawServerDefault,
+    RawRequestDefaultExpression,
+    RawReplyDefaultExpression,
+    RouteGenericInterface,
+    ContextConfigDefault,
+    Schema,
+    TypeBoxTypeProvider,
+    FastifyBaseLogger
+  >
