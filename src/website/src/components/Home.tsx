@@ -1,10 +1,10 @@
-import mynt from '../assets/mynt.png'
+import logo from '../assets/mynt.png'
 
 export function Home() {
   return (
     <>
       <h1>This will be the home page</h1>
-      <img src={mynt} />
+      <img src={logo} />
     </>
   )
 }

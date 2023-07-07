@@ -10,10 +10,13 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@fastify/cookie": "^8.3.0",
+    "@fastify/session": "^10.4.0",
     "@fastify/static": "^6.10.2",
     "@fastify/type-provider-typebox": "^3.2.0",
     "@prisma/client": "^4.16.1",
     "@sinclair/typebox": "^0.28.19",
+    "dotenv": "^16.3.1",
     "fastify": "^4.18.0",
     "prisma": "^4.16.1"
   },
