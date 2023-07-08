@@ -40,6 +40,8 @@ export const login: RouteHandler<LoginSchema> = async (req) => {
     }
   })
 
+  console.log({ token })
+
   const me = await meResponse.json()
 
   return me

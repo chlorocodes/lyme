@@ -9,5 +9,5 @@
     "resolveJsonModule": true,
     "noImplicitAny": true
   },
-  "include": ["src", "typings"]
+  "include": ["src", "prisma", "typings"]
 }
