@@ -32,15 +32,15 @@ export const login: RouteHandler<LoginSchema> = async (req) => {
   })
 
   const token: AuthToken = await response.json()
-  req.session.token = token
+
+  req.session.accessToken = token.access_token
+  req.session.expires = token.expires_in
 
   const meResponse = await fetch('https://discord.com/api/users/@me', {
     headers: {
       Authorization: `${token.token_type} ${token.access_token}`
     }
   })
-
-  console.log({ token })
 
   const me = await meResponse.json()
 

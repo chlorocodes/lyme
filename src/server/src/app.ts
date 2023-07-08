@@ -12,16 +12,7 @@ export const app = server({
   logger: true
 })
 
-app.get('/', (request, reply) => {
-  console.log(request.session.token)
-  console.log(request.session.token)
-  console.log(request.session.token)
-  console.log(request.session.token)
-  console.log(request.session.token)
-  reply.send(request.cookies.sessionId)
-})
-
-app.register(fastifyCookie, {})
+app.register(fastifyCookie)
 app.register(fastifySession, {
   secret: process.env.SESSION_SECRET as string,
   cookie: { secure: false }

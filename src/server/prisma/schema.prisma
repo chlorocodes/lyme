@@ -8,10 +8,9 @@ datasource db {
 }
 
 model Session {
-  id          String   @id @default(uuid()) @map("id")
+  id          String   @id @map("id")
   userId      String   @map("user_id")
   accessToken String   @map("access_token")
-  scope       String   @map("scope")
   expires     DateTime @map("expires")
 
   @@map("sessions")
