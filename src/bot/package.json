@@ -1,6 +1,7 @@
 {
   "name": "mynt",
   "version": "1.0.0",
+  "type": "module",
   "description": "Discord bot for mynt",
   "scripts": {
     "clean": "rm -r dist",
@@ -18,6 +19,7 @@
     "discord.js": "^14.11.0",
     "dotenv": "^16.0.3",
     "forever": "^4.0.3",
+    "langchain": "^0.0.106",
     "openai": "^3.3.0",
     "unsplash-js": "^7.0.18"
   },
