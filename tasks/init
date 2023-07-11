@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+set -e
+
+echo "============================================"
+echo "Installing latest dependencies..."
+echo "============================================"
+npm install
+
+echo -e "\n\n============================================"
+echo "Creating server .env skeleton..."
+echo "============================================"
+echo "NODE_ENV=development" > ./src/server/.env
+echo "PORT=3000" >> ./src/server/.env
+echo "DB_URL=file:./lyme.db" >> ./src/server/.env
+echo "NODE_ENV=production" >> ./src/server/.env
+echo "DISCORD_TOKEN=<discordToken>">> ./src/server/.env
+echo "DISCORD_CLIENT_ID=<clientId>" >> ./src/server/.env
+echo "DISCORD_CLIENT_SECRET=<clientSecret>" >> ./src/server/.env
+echo "DISCORD_REDIRECT_URI=<redirectUri>" >> ./src/server/.env
+echo "OPENAI_TOKEN=<openAIToken>" >> ./src/server/.env
+echo -e "Successfully created src/server/.env file.\n\n"
+
+echo "============================================"
+echo "Creating website .env"
+echo "============================================"
+echo "PORT=4000" > ./src/website/.env
+echo -e "Successfully created src/website/.env file.\n\n"
+
+echo "============================================"
+echo "Running database migrations..."
+echo "============================================"
+npm run migrate 

@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import { Mynt } from './Mynt'
+import { Lyme } from './Lyme'
 
-const mynt = new Mynt()
-mynt.run()
+const lyme = new Lyme()
+lyme.run()

@@ -1,12 +1,12 @@
 {
-  "name": "@mynt/server",
+  "name": "@lyme/server",
   "version": "1.0.0",
   "scripts": {
-    "init": "npx prisma migrate dev",
     "build": "tsc",
     "clean": "rm -r dist",
     "dev": "nodemon --files src/index.ts",
-    "start": "node dist/index.ts"
+    "start": "node dist/index.ts",
+    "migrate": "npx prisma migrate dev"
   },
   "license": "MIT",
   "dependencies": {

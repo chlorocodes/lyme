@@ -1,4 +1,4 @@
-import logo from '../assets/mynt.png'
+import logo from '../assets/lyme.png'
 
 export function Home() {
   return (
