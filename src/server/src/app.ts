@@ -19,3 +19,9 @@ app.register(fastifySession, {
 
 app.register(serveStatic, { root: join(__dirname, '..') })
 app.register(authRoutes, { prefix: '/api/auth' })
+
+app.get('/account', (req) => {
+  console.log(req.session.userId)
+  console.log(req.session.username)
+  return { status: 'success' }
+})

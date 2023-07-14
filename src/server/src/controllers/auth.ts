@@ -14,7 +14,7 @@ export const auth: RouteHandler = (req, res) => {
   return res.redirect(redirectUrl)
 }
 
-export const login: RouteHandler<LoginSchema> = async (req) => {
+export const login: RouteHandler<LoginSchema> = async (req, res) => {
   console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@')
   console.log(req.session)
   console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@')
@@ -50,5 +50,5 @@ export const login: RouteHandler<LoginSchema> = async (req) => {
   req.session.userId = user.id
   req.session.username = user.username
 
-  return user
+  res.redirect('/account')
 }
