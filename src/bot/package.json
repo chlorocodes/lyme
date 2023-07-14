@@ -1,7 +1,9 @@
 {
-  "name": "lyme",
+  "name": "@lyme/bot",
   "version": "1.0.0",
   "description": "Discord bot for lyme",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "clean": "rm -r dist",
     "build": "npm run compile && npm run copyFiles",
@@ -10,14 +12,12 @@
     "dev": "nodemon src/index.ts",
     "start": "forever start dist/index.js",
     "stop": "forever stop dist/index.js",
-    "restart": "forever restart dist/index.js"
+    "restart": "forever restart dist/index.js",
+    "prepare": "npm run build"
   },
-  "keywords": [],
   "dependencies": {
     "@google-cloud/translate": "^7.2.1",
     "discord.js": "^14.11.0",
-    "dotenv": "^16.0.3",
-    "forever": "^4.0.3",
     "openai": "^3.3.0",
     "unsplash-js": "^7.0.18"
   },

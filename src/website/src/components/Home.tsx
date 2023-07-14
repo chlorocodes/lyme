@@ -1,4 +1,4 @@
-import logo from '../assets/lyme.png'
+import logo from '../assets/lime.svg'
 
 export function Home() {
   return (

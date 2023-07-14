@@ -1,4 +1,5 @@
 import 'dotenv/config'
+import { lyme } from './bot'
 import { app } from './app'
 
 const isProd = process.env.NODE_ENV === 'production'
@@ -9,4 +10,5 @@ app.listen({ port: Number(port), host }, (err) => {
   if (err) {
     console.error(err)
   }
+  lyme.run()
 })

@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "scripts": {
     "init": "./tasks/init",
-    "dev": "concurrently -n server,website,bot -c blue,green,magenta \"npm:dev:server\" \"npm:dev:website\" \"npm:dev:bot\"",
+    "build": "npm run build --workspaces --if-present",
+    "dev": "concurrently -n server,website -c blue,green \"npm:dev:server\" \"npm:dev:website\"",
     "dev:server": "npm run dev --workspace=./src/server",
     "dev:website": "npm run dev --workspace=./src/website",
-    "dev:bot": "npm run dev --workspace=./src/bot",
     "migrate": "npm run migrate --workspace=./src/server"
   },
   "workspaces": [
